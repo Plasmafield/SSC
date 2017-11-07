@@ -17,6 +17,7 @@ public class Primary extends Object {
     private JMenu fileMenu = new JMenu("File");
     private JMenu abonatMenu = new JMenu("Abonati");
     private JMenu helpMenu = new JMenu("Help");
+  //  private JMenu optionsMenu = new JMenu("Options");
     private JTable table = new JTable();
     private Container c = primaryFrame.getContentPane();
     private Container p = new JFrame().getContentPane();
@@ -36,7 +37,11 @@ public class Primary extends Object {
     //helpMenu members
     private JMenuItem inregistrareItem = new JMenuItem("Inregistrare");
     private JMenuItem aboutItem = new JMenuItem("About");
-
+    
+    //optionsMenu members
+    //private JMenuItem proprietatiItem = new JMenuItem("Proprietati");
+    //private JMenuItem setariItem = new JMenuItem("Setari");
+    
     //Window buttons
     private JButton adaugaButton = new JButton("Adauga");
     private JButton stergeButton = new JButton("Sterge");
@@ -44,9 +49,11 @@ public class Primary extends Object {
     private JButton sorteazaButton = new JButton("Sorteaza");
     private JButton cautaButton = new JButton("Cauta");
     private JButton exitButton = new JButton("Exit");
-
+   // private JButton setariButton = new JButton("Setari");
+   // private JButton proprietatiButton = new JButton("Proprietati");
+    
     //others
-    private String[] choice = new String[] {"Nume","Prenume","CNP","Numar fix","Numar mobil"};
+    private String[] choice = new String[] {"Nume","Prenume","CNP","Numar fix","Numar mobil","Adresa"};
     private JComboBox<String> sortChoice = new JComboBox<String>(choice);
     private CarteDeTelefon tModel = new CarteDeTelefon();
     private JCheckBox complet = new JCheckBox("Complet");
@@ -59,11 +66,13 @@ public class Primary extends Object {
     private JLabel adCNP = new JLabel("CNP:");
     private JLabel adNrFix = new JLabel("Numar fix:");
     private JLabel adNrMob = new JLabel("Numar mobil:");
+    private JLabel adAdresa = new JLabel("Adresa:");
     private JTextField adNumet = new JTextField(20);
     private JTextField adPrenumet = new JTextField(20);
     private JTextField adCNPt = new JTextField(20);
     private JTextField adNrFixt = new JTextField(20);
     private JTextField adNrMobt = new JTextField(20);
+    private JTextField adAdresat = new JTextField(20);
     private JButton adButton = new JButton("Adauga");
 
     //modificaFrame
@@ -72,11 +81,13 @@ public class Primary extends Object {
     private JLabel modCNP = new JLabel("CNP:");
     private JLabel modNrFix = new JLabel("Numar fix:");
     private JLabel modNrMob = new JLabel("Numar mobil:");
+    private JLabel modAdresa = new JLabel("Adresa:");
     private JTextField modNumet = new JTextField(20);
     private JTextField modPrenumet = new JTextField(20);
     private JTextField modCNPt = new JTextField(20);
     private JTextField modNrFixt = new JTextField(20);
     private JTextField modNrMobt = new JTextField(20);
+    private JTextField modAdresat = new JTextField(20);
     private JButton modButton = new JButton("Modifica");
 
     //cautaFrame
@@ -85,11 +96,13 @@ public class Primary extends Object {
     private JLabel caCNP = new JLabel("CNP:");
     private JLabel caNrFix = new JLabel("Numar fix:");
     private JLabel caNrMob = new JLabel("Numar mobil:");
+    private JLabel caAdresa = new JLabel("Adresa:");
     private JTextField caNumet = new JTextField(20);
     private JTextField caPrenumet = new JTextField(20);
     private JTextField caCNPt = new JTextField(20);
     private JTextField caNrFixt = new JTextField(20);
     private JTextField caNrMobt = new JTextField(20);
+    private JTextField caAdresat = new JTextField(20);
     private JButton caButton = new JButton("Cauta");
 
     //ads
@@ -114,7 +127,7 @@ public class Primary extends Object {
         fileMenu.add(newItem); fileMenu.add(openItem); fileMenu.add(saveItem); fileMenu.addSeparator(); fileMenu.add(exitItem);
         abonatMenu.add(adaugaItem); abonatMenu.add(cautaItem); abonatMenu.add(stergeItem); abonatMenu.add(modificaItem);
         helpMenu.add(inregistrareItem); helpMenu.addSeparator(); helpMenu.add(aboutItem);
-        menuBar.add(fileMenu); menuBar.add(abonatMenu); menuBar.add(helpMenu);
+        menuBar.add(fileMenu); menuBar.add(abonatMenu); menuBar.add(helpMenu);//menuBar.add(optionsMenu);
         primaryFrame.setJMenuBar(menuBar);
         primaryFrame.getContentPane().setLayout(new GridBagLayout());
         design();
@@ -142,6 +155,7 @@ public class Primary extends Object {
         fileMenu.setMnemonic(KeyEvent.VK_F);
         abonatMenu.setMnemonic(KeyEvent.VK_A);
         helpMenu.setMnemonic(KeyEvent.VK_H);
+        //optionsMenu.setMnemonic(KeyEvent.VK_O);
 
         newItem.setEnabled(false);
         openItem.setEnabled(false);
@@ -150,6 +164,8 @@ public class Primary extends Object {
         cautaItem.setEnabled(false);
         stergeItem.setEnabled(false);
         modificaItem.setEnabled(false);
+      //  setariItem.setEnabled(false);
+       // proprietatiItem.setEnabled(false);
 
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -166,6 +182,8 @@ public class Primary extends Object {
         adaugaFrame.add(adNrFixt);
         adaugaFrame.add(adNrMob);
         adaugaFrame.add(adNrMobt);
+        adaugaFrame.add(adAdresa);
+        adaugaFrame.add(adAdresat);
         adaugaFrame.add(adButton);
 
         //modificaFrame
@@ -181,6 +199,8 @@ public class Primary extends Object {
         modificaFrame.add(modNrFixt);
         modificaFrame.add(modNrMob);
         modificaFrame.add(modNrMobt);
+        modificaFrame.add(modAdresa);
+        modificaFrame.add(modAdresat);
         modificaFrame.add(modButton);
 
         //cautaFrame
@@ -196,6 +216,8 @@ public class Primary extends Object {
         cautaFrame.add(caNrFixt);
         cautaFrame.add(caNrMob);
         cautaFrame.add(caNrMobt);
+        cautaFrame.add(caAdresa);
+        cautaFrame.add(caAdresat);
         cautaFrame.add(caButton);
 
         //cautaButton
@@ -387,12 +409,13 @@ public class Primary extends Object {
         event  = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    tModel.add(adNumet.getText(),adPrenumet.getText(),adCNPt.getText(),adNrFixt.getText(),adNrMobt.getText());
+                    tModel.add(adNumet.getText(),adPrenumet.getText(),adCNPt.getText(),adNrFixt.getText(),adNrMobt.getText(),adAdresat.getText());
                     adNumet.setText("");
                     adPrenumet.setText("");
                     adCNPt.setText("");
                     adNrFixt.setText("");
                     adNrMobt.setText("");
+                    adAdresat.setText("");
                     adaugaFrame.setVisible(false);
                 }
                 catch(IllegalArgumentException ex) {
@@ -431,12 +454,13 @@ public class Primary extends Object {
         event = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    tModel.modify(modNumet.getText(),modPrenumet.getText(),modCNPt.getText(),modNrFixt.getText(),modNrMobt.getText(),table.getSelectedRow());
+                    tModel.modify(modNumet.getText(),modPrenumet.getText(),modCNPt.getText(),modNrFixt.getText(),modNrMobt.getText(), table.getSelectedRow());
                     modNumet.setText("");
                     modPrenumet.setText("");
                     modCNPt.setText("");
                     modNrFixt.setText("");
                     modNrMobt.setText("");
+                    modAdresat.setText("");
                     modificaFrame.setVisible(false);
                 }
                 catch(IllegalArgumentException ex) {
@@ -490,12 +514,13 @@ public class Primary extends Object {
         event = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 complet.setSelected(false);
-                tModel.search(caNumet.getText(),caPrenumet.getText(),caCNPt.getText(),caNrFixt.getText(),caNrMobt.getText());
+                tModel.search(caNumet.getText(),caPrenumet.getText(),caCNPt.getText(),caNrFixt.getText(),caNrMobt.getText(),caAdresat.getText());
                 caNumet.setText("");
                 caPrenumet.setText("");
                 caCNPt.setText("");
                 caNrFixt.setText("");
                 caNrMobt.setText("");
+                caAdresat.setText("");
                 cautaFrame.setVisible(false);
             }
         };
