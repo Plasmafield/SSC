@@ -1,19 +1,13 @@
 public class Abonat implements java.io.Serializable {
 
-    String nume,prenume,cnp,nrFix,nrMob,adresa;
+    String nume,prenume,cnp,nrFix,nrMob;
     NrTel nrTel;
 
-    public Abonat(String nume,String prenume,String cnp,String nrFix,String nrMob,String adresa) {
+    public Abonat(String nume,String prenume,String cnp,String nrFix,String nrMob) {
         setNume(nume);
         setPrenume(prenume);
         setCNP(cnp);
-        setAdresa(adresa);
         nrTel = new NrTel(nrFix,nrMob);
-    }
-
-    Abonat(String nume, String prenume, String cnp, String nrFix, String nrMob) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-       
     }
 
     public String getNume() {
@@ -35,11 +29,7 @@ public class Abonat implements java.io.Serializable {
     public String getNrMob() {
         return nrTel.getNrMob();
     }
-    
-   public String getAdresa() {
-        return adresa;
-    }
-    
+
     private boolean isWord(String seq) {
         char[] arr = seq.toCharArray();
         int i;
@@ -86,23 +76,9 @@ public class Abonat implements java.io.Serializable {
     public void setNrMob(String nrMob) {
         nrTel.setNrMob(nrMob);
     }
-    
-     public void setAdresa(String adresa) {
-          if (!isWord(adresa)||adresa.equals("")) throw new IllegalArgumentException("Adresa invalida!");
-        String prov = String.valueOf(adresa.charAt(0)).toUpperCase();
-        prov = prov.concat(adresa.substring(1));
-        this.adresa = prov.trim();
-    }
-
 
     public String toString() {
         return nume+" "+prenume;
     }
-
-  /*  Object getAdresa() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-*/   
 
 }

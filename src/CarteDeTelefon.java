@@ -44,12 +44,6 @@ public class CarteDeTelefon extends AbstractTableModel {
                 return a1.getNrMob().compareTo(a2.getNrMob());
             }
         };
-    
- private Comparator<Abonat> sortAdresa = new Comparator<Abonat>() {
-            public int compare(Abonat a1,Abonat a2) {
-                return a1.getAdresa().compareTo(a2.getAdresa());
-            }
-        };
 
     public CarteDeTelefon() {
         ArrayList<Abonat> temp = null;
@@ -129,12 +123,12 @@ public class CarteDeTelefon extends AbstractTableModel {
         saveFile = f;
     }
 
-    public void add(String nume,String prenume,String cnp,String nrFix,String nrMob,String adresa) {
+    public void add(String nume,String prenume,String cnp,String nrFix,String nrMob) {
         int i;
         for (i=0;i<all.size();i++) {
             if (all.get(i).getCNP().equals(cnp)) throw new IllegalArgumentException("Persoana deja exista!");
         }
-        all.add(new Abonat(nume,prenume,cnp,nrFix,nrMob,adresa));
+        all.add(new Abonat(nume,prenume,cnp,nrFix,nrMob));
         fireTableDataChanged();
 
     }
@@ -166,7 +160,7 @@ public class CarteDeTelefon extends AbstractTableModel {
         fireTableDataChanged();
     }
 
-    public void search(String nume,String prenume,String cnp,String nrFix,String nrMob, String adresa) {
+    public void search(String nume,String prenume,String cnp,String nrFix,String nrMob) {
         subSet = new ArrayList<Abonat>();
         Iterator i = all.iterator();
         while (i.hasNext()) {
@@ -176,21 +170,18 @@ public class CarteDeTelefon extends AbstractTableModel {
             int c = ab.getCNP().indexOf(cnp);
             int d = ab.getNrFix().indexOf(nrFix);
             int e = ab.getNrMob().indexOf(nrMob);
-            int f = ab.getAdresa().indexOf(adresa);
-            if (a!=-1&&b!=-1&&c!=-1&&d!=-1&&e!=-1&&f!=-1) subSet.add(ab);
+            if (a!=-1&&b!=-1&&c!=-1&&d!=-1&&e!=-1) subSet.add(ab);
         }
         set(false);
     }
 
-    public void modify(String nume,String prenume,String cnp,String nrFix,String nrMob,int p,String adresa) {
+    public void modify(String nume,String prenume,String cnp,String nrFix,String nrMob,int p) {
         Abonat a = link.get(p);
         a.setNume(nume);
         a.setPrenume(prenume);
         a.setCNP(cnp);
         a.setNrFix(nrFix);
         a.setNrMob(nrMob);
-        a.setAdresa(adresa);
-        
         fireTableDataChanged();
 
     }
@@ -202,7 +193,6 @@ public class CarteDeTelefon extends AbstractTableModel {
             case("CNP"): Collections.sort(link,sortCNP); break;
             case("Numar fix"): Collections.sort(link,sortFix); break;
             case("Numar mobil"): Collections.sort(link,sortMob); break;
-            case("Adresa"): Collections.sort(link,sortAdresa); break;
         }
         fireTableDataChanged();
     }
@@ -214,13 +204,12 @@ public class CarteDeTelefon extends AbstractTableModel {
             case(2): return "CNP";
             case(3): return "Numar fix";
             case(4): return "Numar mobil";
-            case(5): return "Adresa";
         }
         return "";
     }
 
     public int getColumnCount() {
-        return 6;
+        return 5;
     }
 
     public int getRowCount() {
@@ -233,8 +222,7 @@ public class CarteDeTelefon extends AbstractTableModel {
             case(1): return link.get(row).getPrenume();
             case(2): return link.get(row).getCNP();
             case(3): return link.get(row).getNrFix(); 
-            case(4): return link.get(row).getNrMob(); 
-            case(5): return link.get(row).getAdresa();
+            case(4): return link.get(row).getNrMob();
         }
         return null;
     }
@@ -273,22 +261,6 @@ public class CarteDeTelefon extends AbstractTableModel {
 
     public String toString() {
         return "CarteDeTelefon";
-    }
-
-    void search(String text, String text0, String text1, String text2, String text3, String text4, String text5) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
- /*   void search(String text, String text0, String text1, String text2, String text3, String text4) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }*/
-
-    void add(String text, String text0, String text1, String text2, String text3, String text4, String text5) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    void modify(String text, String text0, String text1, String text2, String text3, int selectedRow) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
