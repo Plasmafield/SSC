@@ -57,21 +57,21 @@ public class Client implements java.io.Serializable {
     }
 
     public void setName(String name) {
-        if (!isWord(name)||name.equals("")) throw new IllegalArgumentException("name invalid!");
+        if (!isWord(name)||name.equals("")) throw new IllegalArgumentException("Invalid name!");
         String prov = String.valueOf(name.charAt(0)).toUpperCase();
         prov = prov.concat(name.substring(1));
         this.name = prov.trim();
     }
 
     public void setSurname(String surname) {
-        if (!isWord(surname)||surname.equals("")) throw new IllegalArgumentException("surname invalid!");
+        if (!isWord(surname)||surname.equals("")) throw new IllegalArgumentException("Invalid surname!");
         String prov = String.valueOf(surname.charAt(0)).toUpperCase();
         prov = prov.concat(surname.substring(1));
         this.surname = prov.trim();
     }
 
     public void setPIN(String pin) {
-        if (pin.length()!=13||!isNumber(pin)||(int)pin.charAt(0)-48<1||(int)pin.charAt(0)-48>6) throw new IllegalArgumentException("pin invalid");
+        if (pin.length()!=13||!isNumber(pin)||(int)pin.charAt(0)-48<1||(int)pin.charAt(0)-48>6) throw new IllegalArgumentException("Invalid PIN");
         this.PIN = pin;
     }
     

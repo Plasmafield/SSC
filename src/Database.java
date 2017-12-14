@@ -46,32 +46,9 @@ public class Database extends AbstractTableModel {
         };
 
     public Database() {
-        ArrayList<Client> temp = null;
-        File address = null;
-        try {
-            File f = new File("last.dba");
-            if (!f.exists()) f.createNewFile();
-            else {
-                FileInputStream fis = new FileInputStream(f);
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                address = (File)ois.readObject();
-                ois.close();
-                fis.close();
-                if (address!=null) {
-                    saveFile = address;
-                    fis = new FileInputStream(address);
-                    ois = new ObjectInputStream(fis);
-                    temp = (ArrayList)ois.readObject();
-                    ois.close();
-                    fis.close();
-                }
-            }
-        }
-        catch(Exception e) {}
-        if (temp!=null) all=temp;
         link = all;
         fireTableDataChanged();
-        saver.schedule(saverTask,0,300000);
+        saver.schedule(saverTask,0,60);
     }
     
     public void setKey(String key) {
@@ -122,22 +99,8 @@ public class Database extends AbstractTableModel {
         set(true);
         saveFile = f;
     }
-
-    public void save() {
-        try {
-            cipher.init(Cipher.ENCRYPT_MODE, key);
-            FileOutputStream fos = new FileOutputStream(saveFile);
-            CipherOutputStream cos = new CipherOutputStream(fos, cipher);
-            ObjectOutputStream oos = new ObjectOutputStream(cos);
-            oos.writeObject(all);
-            oos.close();
-            cos.close();
-            fos.close();
-        }
-        catch(Exception e) {}
-    }
-
-    public void save(File f) {
+    
+    private void serialize(File f) {
         try {
             cipher.init(Cipher.ENCRYPT_MODE, key);
             FileOutputStream fos = new FileOutputStream(f);
@@ -148,9 +111,15 @@ public class Database extends AbstractTableModel {
             cos.close();
             fos.close();
         }
-        catch(Exception e){
-            System.out.println("Error in save");
-        }
+        catch(Exception e) {}
+    }
+
+    public void save() {
+        serialize(saveFile);
+    }
+
+    public void save(File f) {
+        serialize(f);
         saveFile = f;
     }
 
@@ -217,8 +186,8 @@ public class Database extends AbstractTableModel {
 
     public void sort(String choice) {
         switch(choice) {
-            case("Nume"): Collections.sort(link,sortNume); break;
-            case("Prenume"): Collections.sort(link,sortPrenume); break;
+            case("Name"): Collections.sort(link,sortNume); break;
+            case("Surname"): Collections.sort(link,sortPrenume); break;
             case("PIN"): Collections.sort(link,sortPIN); break;
             case("IBAN"): Collections.sort(link,sortIBAN); break;
         }
@@ -254,21 +223,18 @@ public class Database extends AbstractTableModel {
     }
 
     public void last() {
-        if (saveFile!=null) {
-            try {
-                File f = new File("last.dba");
-                f.createNewFile();
-                FileOutputStream fos = new FileOutputStream(f);
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeObject(saveFile);
-                oos.close();
-                fos.close();
-            }
-            catch(IOException e) {
-                System.exit(0);
-            }
+        try {
+            File f = new File("last.dba");
+            if (!f.exists()) f.createNewFile();
+            FileOutputStream fos = new FileOutputStream(f);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(all);
+            oos.close();
+            fos.close();
         }
-        else new File("last.dba").delete();
+        catch(IOException e) {
+            System.exit(0);
+        }
     }
 
     public void newData() {
