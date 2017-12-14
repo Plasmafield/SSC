@@ -1,11 +1,18 @@
 import javax.swing.table.*;
 import java.util.*;
 import java.io.*;
+import javax.crypto.*;
+import java.security.*;
 public class Database extends AbstractTableModel {
     private ArrayList<Client> all = new ArrayList<Client>();
     private ArrayList<Client> subSet = new ArrayList<Client>();
     private ArrayList<Client> link;
     private File saveFile = null;
+    private String textKey;
+    private KeyGenerator keyGen;
+    private Key key;
+    private Cipher cipher;
+    private SecureRandom randomSeed;
     private Timer saver = new Timer();
     private TimerTask saverTask = new TimerTask() {
             public void run() {
@@ -66,22 +73,45 @@ public class Database extends AbstractTableModel {
         fireTableDataChanged();
         saver.schedule(saverTask,0,300000);
     }
+    
+    public void setKey(String key) {
+        try {
+            textKey = key;
+            randomSeed = new SecureRandom(key.getBytes());
+            keyGen = KeyGenerator.getInstance("AES");
+            keyGen.init(128,randomSeed);
+            this.key = keyGen.generateKey();
+            cipher = Cipher.getInstance("AES");
+        }
+        catch(Exception e) {}
+    }
 
     public boolean isSaved() {
         if (saveFile!=null) return true;
         else return false;
     }
 
-    public void open(File f) {
+    public void open(File f) throws IOException, SecurityException {
         ArrayList<Client> temp = null;
+        FileInputStream fis;
         try {
-            FileInputStream fis = new FileInputStream(f);
-            ObjectInputStream ois = new ObjectInputStream(fis);
+            fis = new FileInputStream(f);
+        }
+        catch (Exception e) {
+            throw new IOException("File not found or permission to access it is denied");
+        }
+        try {
+            cipher.init(Cipher.DECRYPT_MODE, key);
+            CipherInputStream cis = new CipherInputStream(fis, cipher);
+            ObjectInputStream ois = new ObjectInputStream(cis);
             temp = (ArrayList)ois.readObject();
             ois.close();
+            cis.close();
             fis.close();
         }
-        catch(Exception e) {}
+        catch(Exception e) {
+            throw new SecurityException("You are not authorized to view or edit this file");
+        }
         if (temp!=null) {
             all = temp;
         }
@@ -95,10 +125,13 @@ public class Database extends AbstractTableModel {
 
     public void save() {
         try {
+            cipher.init(Cipher.ENCRYPT_MODE, key);
             FileOutputStream fos = new FileOutputStream(saveFile);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            CipherOutputStream cos = new CipherOutputStream(fos, cipher);
+            ObjectOutputStream oos = new ObjectOutputStream(cos);
             oos.writeObject(all);
             oos.close();
+            cos.close();
             fos.close();
         }
         catch(Exception e) {}
@@ -106,13 +139,18 @@ public class Database extends AbstractTableModel {
 
     public void save(File f) {
         try {
+            cipher.init(Cipher.ENCRYPT_MODE, key);
             FileOutputStream fos = new FileOutputStream(f);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            CipherOutputStream cos = new CipherOutputStream(fos, cipher);
+            ObjectOutputStream oos = new ObjectOutputStream(cos);
             oos.writeObject(all);
             oos.close();
+            cos.close();
             fos.close();
         }
-        catch(Exception e){}
+        catch(Exception e){
+            System.out.println("Error in save");
+        }
         saveFile = f;
     }
 
@@ -244,7 +282,7 @@ public class Database extends AbstractTableModel {
         if (saveFile!=null) {
             return saveFile.getAbsolutePath();
         }
-        return "Fisier nou";
+        return "New file";
     }
 
     public String toString() {

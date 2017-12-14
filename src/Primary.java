@@ -6,6 +6,7 @@ import java.util.*;
 import java.io.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
+import javax.crypto.*;
 
 public class Primary extends Object {
     private JFrame primaryFrame = new JFrame("Bank Viewer");
@@ -58,6 +59,8 @@ public class Primary extends Object {
     private int inactiveSeconds;
     private TimerTask logoutTask;
     private java.util.Timer logoutTimer;
+    private boolean logged;
+    private String password;
 
     //addFrame
     private JLabel addName = new JLabel("Name:");
@@ -117,6 +120,7 @@ public class Primary extends Object {
         oldMousePos = 0;
         timeoutSeconds = 300;
         inactiveSeconds = 0;
+        logged = false;
 
         //Atribuire functionalitate componente
         function();
@@ -357,10 +361,18 @@ public class Primary extends Object {
                     switchContent();
                     return;
                 }
-                String input = JOptionPane.showInputDialog(primaryFrame.getContentPane(),"Please type your product key below:","Registration",JOptionPane.PLAIN_MESSAGE);
-                if (input != null && input.equals("pass")) {
+                String input = JOptionPane.showInputDialog(primaryFrame.getContentPane(),"Please type your password:","Credentials",JOptionPane.PLAIN_MESSAGE);
+                if (logged && !input.equals(password)) {
+                    JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"Password incorrect!");
+                }
+                else if ((!logged && input != null) || (logged && input.equals(password))) {
                     //JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"WELCOME!");
+                    password = input;
                     switchContent();
+                    if (!logged) {
+                        tModel.setKey(input);
+                    }
+                    logged = true;
                     logoutTask = new TimerTask() {
                         public void run() {
                             Point mouseLoc = MouseInfo.getPointerInfo().getLocation();
@@ -382,9 +394,6 @@ public class Primary extends Object {
                     };
                     logoutTimer = new java.util.Timer();
                     logoutTimer.schedule(logoutTask, 1000, 1000);
-                }
-                else if (input != null) {
-                    JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"Password incorrect!");
                 }
             }
         };
@@ -535,11 +544,13 @@ public class Primary extends Object {
                 if (f!=null) {
                     if (f.getName().endsWith(".dba")) {
                         try {
-                            if (!f.exists()) f.createNewFile();
                             tModel.open(f);
                         }
+                        catch(SecurityException sec) {
+                            JOptionPane.showMessageDialog(primaryFrame.getContentPane(),sec.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+                        }
                         catch(Exception ex) {
-                            JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"Error opening file","Error",JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(primaryFrame.getContentPane(),ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
                         }
                     }
                     else JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"Wrong file format! Expected format: .dba","Error",JOptionPane.ERROR_MESSAGE);
