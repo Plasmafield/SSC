@@ -8,14 +8,14 @@ import javax.swing.border.*;
 import javax.swing.table.*;
 
 public class Primary extends Object {
-    private JFrame primaryFrame = new JFrame("Phone Book");
-    private JFrame adaugaFrame = new JFrame("Adaugare");
-    private JFrame modificaFrame = new JFrame("Modificare");
-    private JFrame cautaFrame = new JFrame("Cautare");
+    private JFrame primaryFrame = new JFrame("Bank Viewer");
+    private JFrame addFrame = new JFrame("Add");
+    private JFrame modifyFrame = new JFrame("Modify");
+    private JFrame searchFrame = new JFrame("Search");
     private JFrame aboutFrame = new JFrame("About");
     private JMenuBar menuBar = new JMenuBar();
     private JMenu fileMenu = new JMenu("File");
-    private JMenu abonatMenu = new JMenu("Abonati");
+    private JMenu clientMenu = new JMenu("Clients");
     private JMenu helpMenu = new JMenu("Help");
     private JTable table = new JTable();
     private Container c = primaryFrame.getContentPane();
@@ -28,83 +28,76 @@ public class Primary extends Object {
     private JMenuItem exitItem = new JMenuItem("Exit");
 
     //abonatMenu members
-    private JMenuItem adaugaItem = new JMenuItem("Adauga");
-    private JMenuItem cautaItem = new JMenuItem("Cauta");
-    private JMenuItem stergeItem = new JMenuItem("Sterge");
-    private JMenuItem modificaItem = new JMenuItem("Modifica");
+    private JMenuItem addItem = new JMenuItem("Add");
+    private JMenuItem searchItem = new JMenuItem("Search");
+    private JMenuItem deleteItem = new JMenuItem("Delete");
+    private JMenuItem modifyItem = new JMenuItem("Modify");
 
     //helpMenu members
-    private JMenuItem inregistrareItem = new JMenuItem("Inregistrare");
+    private JMenuItem logItem = new JMenuItem("Login");
     private JMenuItem aboutItem = new JMenuItem("About");
 
     //Window buttons
-    private JButton adaugaButton = new JButton("Adauga");
-    private JButton stergeButton = new JButton("Sterge");
-    private JButton modificaButton = new JButton("Modifica");
-    private JButton sorteazaButton = new JButton("Sorteaza");
-    private JButton cautaButton = new JButton("Cauta");
+    private JButton addButton = new JButton("Add");
+    private JButton deleteButton = new JButton("Delete");
+    private JButton modifyButton = new JButton("Modify");
+    private JButton sortButton = new JButton("Sort");
+    private JButton searchButton = new JButton("Search");
     private JButton exitButton = new JButton("Exit");
 
     //others
-    private String[] choice = new String[] {"Nume","Prenume","CNP","Numar fix","Numar mobil"};
+    private String[] choice = new String[] {"Name","Surname","PIN"};
     private JComboBox<String> sortChoice = new JComboBox<String>(choice);
-    private CarteDeTelefon tModel = new CarteDeTelefon();
-    private JCheckBox complet = new JCheckBox("Complet");
+    private Database tModel = new Database();
+    private JCheckBox complete = new JCheckBox("Complete");
     private JFileChooser fileChooser = new JFileChooser();
     private JLabel fileLabel = new JLabel();
+    private int content;
+    private int oldMousePos;
+    private int timeoutSeconds;
+    private int inactiveSeconds;
+    private TimerTask logoutTask;
+    private java.util.Timer logoutTimer;
 
-    //adaugaFrame
-    private JLabel adNume = new JLabel("Nume:");
-    private JLabel adPrenume = new JLabel("Prenume");
-    private JLabel adCNP = new JLabel("CNP:");
-    private JLabel adNrFix = new JLabel("Numar fix:");
-    private JLabel adNrMob = new JLabel("Numar mobil:");
-    private JTextField adNumet = new JTextField(20);
-    private JTextField adPrenumet = new JTextField(20);
-    private JTextField adCNPt = new JTextField(20);
-    private JTextField adNrFixt = new JTextField(20);
-    private JTextField adNrMobt = new JTextField(20);
-    private JButton adButton = new JButton("Adauga");
+    //addFrame
+    private JLabel addName = new JLabel("Name:");
+    private JLabel addSurname = new JLabel("Surname");
+    private JLabel addPIN = new JLabel("PIN:");
+    private JLabel addIBAN = new JLabel("IBAN:");
+    private JTextField addNamet = new JTextField(20);
+    private JTextField addSurnamet = new JTextField(20);
+    private JTextField addPINt = new JTextField(20);
+    private JTextField addIBANt = new JTextField(20);
+    private JButton addWindowButton = new JButton("Add");
 
-    //modificaFrame
-    private JLabel modNume = new JLabel("Nume:");
-    private JLabel modPrenume = new JLabel("Prenume");
-    private JLabel modCNP = new JLabel("CNP:");
-    private JLabel modNrFix = new JLabel("Numar fix:");
-    private JLabel modNrMob = new JLabel("Numar mobil:");
-    private JTextField modNumet = new JTextField(20);
-    private JTextField modPrenumet = new JTextField(20);
-    private JTextField modCNPt = new JTextField(20);
-    private JTextField modNrFixt = new JTextField(20);
-    private JTextField modNrMobt = new JTextField(20);
-    private JButton modButton = new JButton("Modifica");
+    //modifyFrame
+    private JLabel modName = new JLabel("Name:");
+    private JLabel modSurname = new JLabel("Surname:");
+    private JLabel modPIN = new JLabel("PIN:");
+    private JLabel modIBAN = new JLabel("IBAN:");
+    private JTextField modNamet = new JTextField(20);
+    private JTextField modSurnamet = new JTextField(20);
+    private JTextField modPINt = new JTextField(20);
+    private JTextField modIBANt = new JTextField(20);
+    private JButton modWindowButton = new JButton("Modify");
 
-    //cautaFrame
-    private JLabel caNume = new JLabel("Nume:");
-    private JLabel caPrenume = new JLabel("Prenume");
-    private JLabel caCNP = new JLabel("CNP:");
-    private JLabel caNrFix = new JLabel("Numar fix:");
-    private JLabel caNrMob = new JLabel("Numar mobil:");
-    private JTextField caNumet = new JTextField(20);
-    private JTextField caPrenumet = new JTextField(20);
-    private JTextField caCNPt = new JTextField(20);
-    private JTextField caNrFixt = new JTextField(20);
-    private JTextField caNrMobt = new JTextField(20);
-    private JButton caButton = new JButton("Cauta");
+    //searchFrame
+    private JLabel searchName = new JLabel("Name:");
+    private JLabel searchSurname = new JLabel("Surname");
+    private JLabel searchPIN = new JLabel("PIN:");
+    private JLabel searchIBAN = new JLabel("IBAN:");
+    private JTextField searchNamet = new JTextField(20);
+    private JTextField searchSurnamet = new JTextField(20);
+    private JTextField searchPINt = new JTextField(20);
+    private JTextField searchIBANt = new JTextField(20);
+    private JButton searchWindowButton = new JButton("Search");
 
-    //ads
-    private String a = "first.jpg";
-    private String b = "second.jpg";
-    private String c1 = "third.jpg";
-    private String d = "fourth.jpg";
-    private String e = "fifth.jpg";
-    private ImageIcon[] poze = new ImageIcon[] {new ImageIcon(a),new ImageIcon(b),new ImageIcon(c1),new ImageIcon(d),new ImageIcon(e)};
     private JLabel banLabel = new JLabel();
 
     //aboutFrame
-    private JLabel aLabel = new JLabel("PHONE BOOK");
-    private JLabel aLabel1 = new JLabel("Product of 2013");
-    private JLabel aLabel2 = new JLabel("Property of some guy!");
+    private JLabel aboutTitle = new JLabel("BANK VIEWER");
+    private JLabel aboutContent = new JLabel("Product of 2017");
+    private JLabel aboutCopy = new JLabel("Property of team RAMBO!");
 
     public Primary() {
         
@@ -112,13 +105,18 @@ public class Primary extends Object {
         table.setModel(tModel);
         table.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         fileMenu.add(newItem); fileMenu.add(openItem); fileMenu.add(saveItem); fileMenu.addSeparator(); fileMenu.add(exitItem);
-        abonatMenu.add(adaugaItem); abonatMenu.add(cautaItem); abonatMenu.add(stergeItem); abonatMenu.add(modificaItem);
-        helpMenu.add(inregistrareItem); helpMenu.addSeparator(); helpMenu.add(aboutItem);
-        menuBar.add(fileMenu); menuBar.add(abonatMenu); menuBar.add(helpMenu);
+        clientMenu.add(addItem); clientMenu.add(searchItem); clientMenu.add(deleteItem); clientMenu.add(modifyItem);
+        helpMenu.add(logItem); helpMenu.addSeparator(); helpMenu.add(aboutItem);
+        menuBar.add(fileMenu); menuBar.add(clientMenu); menuBar.add(helpMenu);
         primaryFrame.setJMenuBar(menuBar);
         primaryFrame.getContentPane().setLayout(new GridBagLayout());
         design();
         fileLabel.setText("File: "+tModel.getSaveFilePath());
+        
+        content = 0;
+        oldMousePos = 0;
+        timeoutSeconds = 300;
+        inactiveSeconds = 0;
 
         //Atribuire functionalitate componente
         function();
@@ -129,74 +127,106 @@ public class Primary extends Object {
         //primaryFrame.setResizable(false);
         primaryFrame.setVisible(true);
     }
+    
+    private void switchContent()
+    {
+        if (content == 0)
+        {
+            primaryFrame.setVisible(false);
+            primaryFrame.setContentPane(c);
+            newItem.setEnabled(true);
+            openItem.setEnabled(true);
+            saveItem.setEnabled(true);
+            addItem.setEnabled(true);
+            searchItem.setEnabled(true);
+            deleteItem.setEnabled(true);
+            modifyItem.setEnabled(true);
+            //inregistrareItem.setEnabled(false);
+            complete.setSelected(true);
+            primaryFrame.pack();
+            primaryFrame.setVisible(true);
+            
+            content = 1;
+        }
+        else
+        {
+            primaryFrame.setVisible(false);
+            primaryFrame.setContentPane(p);
+            newItem.setEnabled(false);
+            openItem.setEnabled(false);
+            saveItem.setEnabled(false);
+            addItem.setEnabled(false);
+            searchItem.setEnabled(false);
+            deleteItem.setEnabled(false);
+            modifyItem.setEnabled(false);
+            //inregistrareItem.setEnabled(true);
+            complete.setSelected(false);
+            primaryFrame.pack();
+            primaryFrame.setVisible(true);
+            logoutTimer.cancel();
+            
+            content = 0;
+        }
+    }
 
     private void design() {
         primaryFrame.setContentPane(p);
         p.add(banLabel);
-        banLabel.setIcon(new ImageIcon("splash.jpeg"));
-        banLabel.setText("Ghita Tudor");
-        banLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
-        banLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+        
         primaryFrame.pack();
 
         fileMenu.setMnemonic(KeyEvent.VK_F);
-        abonatMenu.setMnemonic(KeyEvent.VK_A);
+        clientMenu.setMnemonic(KeyEvent.VK_A);
         helpMenu.setMnemonic(KeyEvent.VK_H);
 
         newItem.setEnabled(false);
         openItem.setEnabled(false);
         saveItem.setEnabled(false);
-        adaugaItem.setEnabled(false);
-        cautaItem.setEnabled(false);
-        stergeItem.setEnabled(false);
-        modificaItem.setEnabled(false);
+        addItem.setEnabled(false);
+        searchItem.setEnabled(false);
+        deleteItem.setEnabled(false);
+        modifyItem.setEnabled(false);
 
         GridBagConstraints gbc = new GridBagConstraints();
 
-        //adaugaFrame
-        adaugaFrame.getContentPane().setLayout(new GridLayout(6,2));
-        adaugaFrame.setBounds(new Rectangle(400,400,0,0));
-        adaugaFrame.add(adNume);
-        adaugaFrame.add(adNumet);
-        adaugaFrame.add(adPrenume);
-        adaugaFrame.add(adPrenumet);
-        adaugaFrame.add(adCNP);
-        adaugaFrame.add(adCNPt);
-        adaugaFrame.add(adNrFix);
-        adaugaFrame.add(adNrFixt);
-        adaugaFrame.add(adNrMob);
-        adaugaFrame.add(adNrMobt);
-        adaugaFrame.add(adButton);
+        //addFrame
+        addFrame.getContentPane().setLayout(new GridLayout(6,2));
+        addFrame.setBounds(new Rectangle(400,400,0,0));
+        addFrame.add(addName);
+        addFrame.add(addNamet);
+        addFrame.add(addSurname);
+        addFrame.add(addSurnamet);
+        addFrame.add(addPIN);
+        addFrame.add(addPINt);
+        addFrame.add(addIBAN);
+        addFrame.add(addIBANt);
+        addFrame.add(addWindowButton);
 
-        //modificaFrame
-        modificaFrame.getContentPane().setLayout(new GridLayout(6,2));
-        modificaFrame.setBounds(new Rectangle(400,400,0,0));
-        modificaFrame.add(modNume);
-        modificaFrame.add(modNumet);
-        modificaFrame.add(modPrenume);
-        modificaFrame.add(modPrenumet);
-        modificaFrame.add(modCNP);
-        modificaFrame.add(modCNPt);
-        modificaFrame.add(modNrFix);
-        modificaFrame.add(modNrFixt);
-        modificaFrame.add(modNrMob);
-        modificaFrame.add(modNrMobt);
-        modificaFrame.add(modButton);
+        //modifyFrame
+        modifyFrame.getContentPane().setLayout(new GridLayout(6,2));
+        modifyFrame.setBounds(new Rectangle(400,400,0,0));
+        modifyFrame.add(modName);
+        modifyFrame.add(modNamet);
+        modifyFrame.add(modSurname);
+        modifyFrame.add(modSurnamet);
+        modifyFrame.add(modPIN);
+        modifyFrame.add(modPINt);
+        modifyFrame.add(modIBAN);
+        modifyFrame.add(modIBANt);
+        modifyFrame.add(modWindowButton);
 
-        //cautaFrame
-        cautaFrame.getContentPane().setLayout(new GridLayout(6,2));
-        cautaFrame.setBounds(new Rectangle(400,400,0,0));
-        cautaFrame.add(caNume);
-        cautaFrame.add(caNumet);
-        cautaFrame.add(caPrenume);
-        cautaFrame.add(caPrenumet);
-        cautaFrame.add(caCNP);
-        cautaFrame.add(caCNPt);
-        cautaFrame.add(caNrFix);
-        cautaFrame.add(caNrFixt);
-        cautaFrame.add(caNrMob);
-        cautaFrame.add(caNrMobt);
-        cautaFrame.add(caButton);
+        //searchFrame
+        searchFrame.getContentPane().setLayout(new GridLayout(6,2));
+        searchFrame.setBounds(new Rectangle(400,400,0,0));
+        searchFrame.add(searchName);
+        searchFrame.add(searchNamet);
+        searchFrame.add(searchSurname);
+        searchFrame.add(searchSurnamet);
+        searchFrame.add(searchPIN);
+        searchFrame.add(searchPINt);
+        searchFrame.add(searchIBAN);
+        searchFrame.add(searchIBANt);
+        searchFrame.add(searchWindowButton);
 
         //cautaButton
         gbc.gridx = 0;
@@ -204,11 +234,11 @@ public class Primary extends Object {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(5,10,10,0);
         gbc.weightx = 0.4;
-        c.add(cautaButton,gbc);
+        c.add(searchButton,gbc);
 
         //sort
         JPanel sortPanel = new JPanel();
-        sortPanel.add(sorteazaButton);
+        sortPanel.add(sortButton);
         sortPanel.add(sortChoice);
         gbc = new GridBagConstraints();
         gbc.gridx = 1;
@@ -223,18 +253,18 @@ public class Primary extends Object {
         gbc = new GridBagConstraints();
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new GridLayout(4,1));
-        leftPanel.add(adaugaButton); leftPanel.add(modificaButton); leftPanel.add(stergeButton); leftPanel.add(complet);
+        leftPanel.add(addButton); leftPanel.add(modifyButton); leftPanel.add(deleteButton); leftPanel.add(complete);
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridheight = 3;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         c.add(leftPanel,gbc);
-        cautaButton.setToolTipText("Cauta un abonat dupa Nume/Prenume/CNP/Numar fix/Numar mobil");
-        adaugaButton.setToolTipText("Adauga in tabel un nou abonat");
-        modificaButton.setToolTipText("Modifica atributele unui abonat existent");
-        stergeButton.setToolTipText("Sterge un abonat din tabel");
-        sorteazaButton.setToolTipText("Sorteaza abonatii dupa criteriu:");
-        exitButton.setToolTipText("Iesire din aplicatie");
+        searchButton.setToolTipText("Search a client after Name/Surname/PIN");
+        addButton.setToolTipText("Add a new client");
+        modifyButton.setToolTipText("Modify an existing client");
+        deleteButton.setToolTipText("Delete a client");
+        sortButton.setToolTipText("Sort clients");
+        exitButton.setToolTipText("Exit from the application");
 
         //table
         JScrollPane tPanel = new JScrollPane(table);
@@ -266,23 +296,11 @@ public class Primary extends Object {
         gbc.anchor = GridBagConstraints.WEST;
         c.add(fileLabel,gbc);
 
-        //temporary contentPane
-        TimerTask tt = new TimerTask() {
-                int i=0;
-                public void run() {
-                    banLabel.setText("");
-                    banLabel.setIcon(poze[i++]);
-                    if (i==poze.length) i=0;
-                }
-            };
-        java.util.Timer t = new java.util.Timer(true);
-        t.schedule(tt,2000,2000);
-
         //aboutFrame
-        aLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        aLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-        aLabel2.setHorizontalAlignment(SwingConstants.CENTER);
-        aboutFrame.add(aLabel,BorderLayout.NORTH); aboutFrame.add(aLabel1,BorderLayout.CENTER); aboutFrame.add(aLabel2,BorderLayout.SOUTH);
+        aboutTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        aboutContent.setHorizontalAlignment(SwingConstants.CENTER);
+        aboutCopy.setHorizontalAlignment(SwingConstants.CENTER);
+        aboutFrame.add(aboutTitle,BorderLayout.NORTH); aboutFrame.add(aboutContent,BorderLayout.CENTER); aboutFrame.add(aboutCopy,BorderLayout.SOUTH);
         aboutFrame.setBounds(new Rectangle(500,500,200,100));
 
     }
@@ -290,24 +308,23 @@ public class Primary extends Object {
     private void modify() {
         int sr = table.getSelectedRow();
         if (sr==-1)
-            JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"Selectati un abonat!","Information",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"Select a client!","Information",JOptionPane.INFORMATION_MESSAGE);
         else {
-            modNumet.setText(tModel.getValueAt(sr,0).toString());
-            modPrenumet.setText(tModel.getValueAt(sr,1).toString());
-            modCNPt.setText(tModel.getValueAt(sr,2).toString());
-            modNrFixt.setText(tModel.getValueAt(sr,3).toString());
-            modNrMobt.setText(tModel.getValueAt(sr,4).toString());
-            modificaFrame.pack();
-            modificaFrame.setVisible(true);
+            modNamet.setText(tModel.getValueAt(sr,0).toString());
+            modSurnamet.setText(tModel.getValueAt(sr,1).toString());
+            modPINt.setText(tModel.getValueAt(sr,2).toString());
+            modIBANt.setText(tModel.getValueAt(sr,3).toString());
+            modifyFrame.pack();
+            modifyFrame.setVisible(true);
         }
     }
 
     private void delete() {
         int s = table.getSelectedRow();
-        if (s==-1) JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"Selectati un abonat!","Information",JOptionPane.INFORMATION_MESSAGE);
+        if (s==-1) JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"Select a client!","Information",JOptionPane.INFORMATION_MESSAGE);
         else {
             String nume = (String)tModel.getValueAt(s,0)+" "+tModel.getValueAt(s,1);
-            int a = JOptionPane.showConfirmDialog(primaryFrame.getContentPane(),"Stergeti abonatul "+nume+"?","Confirmare",JOptionPane.YES_NO_OPTION);
+            int a = JOptionPane.showConfirmDialog(primaryFrame.getContentPane(),"Delete client "+nume+"?","Confirm",JOptionPane.YES_NO_OPTION);
             if (a==0) tModel.delete(table.getSelectedRow());
         }
     }
@@ -335,81 +352,79 @@ public class Primary extends Object {
         //register
         event = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                if (content == 1)
+                {
+                    switchContent();
+                    return;
+                }
                 String input = JOptionPane.showInputDialog(primaryFrame.getContentPane(),"Please type your product key below:","Registration",JOptionPane.PLAIN_MESSAGE);
-                if (input != null && input.equals("0101-firstcopy")) {
-                    JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"WELCOME!");
-                    primaryFrame.setVisible(false);
-                    primaryFrame.setContentPane(c);
-                    newItem.setEnabled(true);
-                    openItem.setEnabled(true);
-                    saveItem.setEnabled(true);
-                    adaugaItem.setEnabled(true);
-                    cautaItem.setEnabled(true);
-                    stergeItem.setEnabled(true);
-                    modificaItem.setEnabled(true);
-                    inregistrareItem.setEnabled(false);
-                    complet.setSelected(true);
-                    JPanel banPanel = new JPanel();
-                    GridBagConstraints gbc = new GridBagConstraints();
-                    gbc.gridx = 0;
-                    gbc.gridy = 5;
-                    gbc.gridwidth = 4;
-                    gbc.weightx = 1.0;
-                    gbc.fill = GridBagConstraints.HORIZONTAL;
-                    gbc.insets = new Insets(15,10,10,10);
-                    gbc.ipadx = 0;
-                    gbc.ipady = 0;
-                    gbc.anchor = GridBagConstraints.CENTER;
-                    banPanel.setLayout(new GridLayout(1,1));
-                    banPanel.add(banLabel);
-                    banPanel.setPreferredSize(new Dimension(100,100));
-                    c.add(banPanel,gbc);
-                    primaryFrame.pack();
-                    primaryFrame.setVisible(true);
+                if (input != null && input.equals("pass")) {
+                    //JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"WELCOME!");
+                    switchContent();
+                    logoutTask = new TimerTask() {
+                        public void run() {
+                            Point mouseLoc = MouseInfo.getPointerInfo().getLocation();
+                            int mouseCoords = mouseLoc.x * mouseLoc.y;
+                            if (mouseCoords == oldMousePos)
+                            {
+                                inactiveSeconds++;
+                            }
+                            else
+                            {
+                                oldMousePos = mouseCoords;
+                                inactiveSeconds = 0;
+                            }
+                            if (inactiveSeconds == timeoutSeconds)
+                            {
+                                switchContent();
+                            }
+                        }
+                    };
+                    logoutTimer = new java.util.Timer();
+                    logoutTimer.schedule(logoutTask, 1000, 1000);
                 }
                 else if (input != null) {
-                    JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"Product key not valid!");
+                    JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"Password incorrect!");
                 }
             }
         };
-        inregistrareItem.addActionListener(event);
+        logItem.addActionListener(event);
 
-        //adauga
+        //add
         event = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                adaugaFrame.pack();
-                adaugaFrame.setVisible(true);
+                addFrame.pack();
+                addFrame.setVisible(true);
             }};
-        adaugaItem.addActionListener(event);
-        adaugaButton.addActionListener(event);
+        addItem.addActionListener(event);
+        addButton.addActionListener(event);
 
-        //adaugaFrame
+        //addFrame
         event  = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    tModel.add(adNumet.getText(),adPrenumet.getText(),adCNPt.getText(),adNrFixt.getText(),adNrMobt.getText());
-                    adNumet.setText("");
-                    adPrenumet.setText("");
-                    adCNPt.setText("");
-                    adNrFixt.setText("");
-                    adNrMobt.setText("");
-                    adaugaFrame.setVisible(false);
+                    tModel.add(addNamet.getText(),addSurnamet.getText(),addPINt.getText(),addIBANt.getText());
+                    addNamet.setText("");
+                    addSurnamet.setText("");
+                    addPINt.setText("");
+                    addIBANt.setText("");
+                    addFrame.setVisible(false);
                 }
                 catch(IllegalArgumentException ex) {
                     JOptionPane.showMessageDialog(primaryFrame.getContentPane(),ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
                 }
             }
         };
-        adButton.addActionListener(event);
+        addWindowButton.addActionListener(event);
 
-        //sterge
+        //delete
         event = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 delete();
             }
         };
-        stergeButton.addActionListener(event);
-        stergeItem.addActionListener(event);
+        deleteButton.addActionListener(event);
+        deleteItem.addActionListener(event);
 
         table.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE,0),"delete");
         table.getActionMap().put("delete",new AbstractAction() {
@@ -418,35 +433,34 @@ public class Primary extends Object {
                 }
             });
 
-        //modifica
+        //modify
         event = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 modify();
             }
         };
-        modificaButton.addActionListener(event);
-        modificaItem.addActionListener(event);
+        modifyButton.addActionListener(event);
+        modifyItem.addActionListener(event);
 
-        //modificaFrame
+        //modifyFrame
         event = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    tModel.modify(modNumet.getText(),modPrenumet.getText(),modCNPt.getText(),modNrFixt.getText(),modNrMobt.getText(),table.getSelectedRow());
-                    modNumet.setText("");
-                    modPrenumet.setText("");
-                    modCNPt.setText("");
-                    modNrFixt.setText("");
-                    modNrMobt.setText("");
-                    modificaFrame.setVisible(false);
+                    tModel.modify(modNamet.getText(),modSurnamet.getText(),modPINt.getText(),modIBANt.getText(),table.getSelectedRow());
+                    modNamet.setText("");
+                    modSurnamet.setText("");
+                    modPINt.setText("");
+                    modIBANt.setText("");
+                    modifyFrame.setVisible(false);
                 }
                 catch(IllegalArgumentException ex) {
                     JOptionPane.showMessageDialog(primaryFrame.getContentPane(),ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
                 }
             }
         };
-        modButton.addActionListener(event);
+        modWindowButton.addActionListener(event);
 
-        //selectie
+        //select
         table.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
                     if (e.getClickCount()==2) {
@@ -460,52 +474,51 @@ public class Primary extends Object {
                     modify();
                 }});
 
-        //sortare
+        //sort
         event = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 tModel.sort((String)sortChoice.getSelectedItem());
             }
         };
-        sorteazaButton.addActionListener(event);
+        sortButton.addActionListener(event);
 
-        //complet
+        //complete
         event = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                tModel.set(complet.isSelected());
+                tModel.set(complete.isSelected());
             }
         };
-        complet.addActionListener(event);
+        complete.addActionListener(event);
 
         //cauta
         event = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                cautaFrame.pack();
-                cautaFrame.setVisible(true);
+                searchFrame.pack();
+                searchFrame.setVisible(true);
             }
         };
-        cautaButton.addActionListener(event);
-        cautaItem.addActionListener(event);
+        searchButton.addActionListener(event);
+        searchItem.addActionListener(event);
 
-        //cautaFrame
+        //searchFrame
         event = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                complet.setSelected(false);
-                tModel.search(caNumet.getText(),caPrenumet.getText(),caCNPt.getText(),caNrFixt.getText(),caNrMobt.getText());
-                caNumet.setText("");
-                caPrenumet.setText("");
-                caCNPt.setText("");
-                caNrFixt.setText("");
-                caNrMobt.setText("");
-                cautaFrame.setVisible(false);
+                complete.setSelected(false);
+                tModel.search(searchNamet.getText(),searchSurnamet.getText(),searchPINt.getText(),searchIBANt.getText());
+                searchNamet.setText("");
+                searchSurnamet.setText("");
+                searchPINt.setText("");
+                searchIBANt.setText("");
+                searchFrame.setVisible(false);
             }
         };
-        caButton.addActionListener(event);
+        searchWindowButton.addActionListener(event);
 
         //newItem
         event = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 tModel.newData();
-                complet.setSelected(true);
+                complete.setSelected(true);
                 fileLabel.setText("File: "+tModel.getSaveFilePath());
             }
         };
@@ -520,16 +533,16 @@ public class Primary extends Object {
                 fileChooser.showOpenDialog(primaryFrame.getContentPane());
                 File f = fileChooser.getSelectedFile();
                 if (f!=null) {
-                    if (f.getName().endsWith(".adb")) {
+                    if (f.getName().endsWith(".dba")) {
                         try {
                             if (!f.exists()) f.createNewFile();
                             tModel.open(f);
                         }
                         catch(Exception ex) {
-                            JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"Datorita unei erori, fisierul nu a putut fi deschis","Eroare",JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"Error opening file","Error",JOptionPane.ERROR_MESSAGE);
                         }
                     }
-                    else JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"Extensie gresita! Extensie asteptata: .adb","Eroare",JOptionPane.ERROR_MESSAGE);
+                    else JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"Wrong file format! Expected format: .dba","Error",JOptionPane.ERROR_MESSAGE);
                 }
                 fileLabel.setText("File: "+tModel.getSaveFilePath());
             }
@@ -544,16 +557,16 @@ public class Primary extends Object {
                     fileChooser.showSaveDialog(primaryFrame.getContentPane());
                     File f = fileChooser.getSelectedFile();
                     if (f!=null) {
-                        if (f.getName().endsWith(".adb")) {
+                        if (f.getName().endsWith(".dba")) {
                             try {
                                 if (!f.exists()) f.createNewFile();
                                 tModel.save(f);
                             }
                             catch(Exception ex) {
-                                JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"Datorita unei erori, fisierul nu a putut fi salvat","Eroare",JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"Error saving file","Error",JOptionPane.ERROR_MESSAGE);
                             }
                         }
-                        else JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"Extensie gresita! Extensie asteptata: .adb","Eroare",JOptionPane.ERROR_MESSAGE);
+                        else JOptionPane.showMessageDialog(primaryFrame.getContentPane(),"Wrong file format! Expected format: .dba","Eroare",JOptionPane.ERROR_MESSAGE);
                     }
                 }
                 fileLabel.setText("File: "+tModel.getSaveFilePath());
